@@ -5,9 +5,6 @@ from .BookingForm import BookingForm
 from .models import Booking
 # Create your views here.
 class BookDriveTest:
-    def index(request):
-        data = {'title':'Đặt lịch lái thử'}
-        return render(request,'BookDriveTest.html',data)
     def handleBooking(request):
         if request.method == 'POST':
             form = BookingForm(request.POST)
