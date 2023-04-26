@@ -9,9 +9,5 @@ class PredictForm(forms.Form):
     fuelType = forms.CharField(max_length=10, label='Loại nhiên liệu sử dụng của xe')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['Name'].widget.attrs.update({'class': 'Name'})
-        self.fields['Company'].widget.attrs.update({'class': 'Company'})
-        self.fields['Year'].widget.attrs.update({'class': 'Year'})
-        self.fields['Price'].widget.attrs.update({'class': 'Price'})
-        self.fields['kmsDriven'].widget.attrs.update({'class': 'kmsDriven'})
-        self.fields['fuelType'].widget.attrs.update({'class': 'fuelType'})
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control form-control-sm'})

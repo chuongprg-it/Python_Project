@@ -3,10 +3,41 @@
 {% block title %}{{title}}{% endblock %}
 
 {% block content %}
-    <h1>{{title}}</h1>
-    <form method="post">
-      {% csrf_token %}
-      {{predictForm.as_div}}
-      <button type="submit">Submit</button>
-    </form>  
+    <div class="container">
+      <h1>{{title}}</h1>
+      <div class="row">
+          <form method="POST" class="col-lg-6">
+              {% csrf_token %}
+              {% for field in predictForm %}
+                  <div class="form-group">
+                      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                      {{ field }}
+                  </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+          </form>
+          <div class="col-lg-6">
+            <table class="table table-striped table-hover">
+              <tr>
+                <th>Tên dòng xe</th>
+                <th>Công ty sản xuất</th>
+                <th>Năm sản xuất</th>
+                <th>Giá tại thời điểm mua</th>
+                <th>Số Kms đã đi được</th>
+                <th>Loại nhiên liệu</th>
+                <th>Giá trị dự đoán</th>
+              </tr>
+              <tr>
+                <td>{{inputModel.name}}</td>
+                <td>{{inputModel.company}}</td>
+                <td>{{inputModel.year}}</td>
+                <td>{{inputModel.price}}</td>
+                <td>{{inputModel.kms_driven}}</td>
+                <td>{{inputModel.fuel_type}}</td>
+                <td>{{predictValue}}</td>
+              </tr>
+            </table>
+          </div>
+      </div>
+    </div>
 {% endblock %}

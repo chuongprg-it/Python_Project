@@ -9,7 +9,6 @@ class BookingForm(forms.Form):
     DateDrive = forms.DateField(label='Ngày lái thử', widget=forms.widgets.DateInput(attrs={'type': 'date'}))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['FullName'].widget.attrs.update({'class': 'FullName'})
-        self.fields['Age'].widget.attrs.update({'class': 'Age'})
-        self.fields['Email'].widget.attrs.update({'class': 'Email'})
-        self.fields['Phone'].widget.attrs.update({'class': 'FullName'})
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control form-control-sm'})
+
