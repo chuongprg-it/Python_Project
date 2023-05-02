@@ -9,5 +9,13 @@ class Booking(models.Model):
     Address = models.TextField()
     Phone = models.CharField(max_length=12)
     DateDrive = models.DateField()
+    Brand = models.CharField(max_length=50)
+    nameCar = models.CharField(max_length=50)
     def __str__(self) -> str:
         return f'Fullname : {self.FullName}'
+    
+
+
+
+
+

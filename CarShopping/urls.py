@@ -22,6 +22,12 @@ from BookDriveTest.views import BookDriveTest
 
 urlpatterns = [
     path('', Home.index),
+    path('detailCar/<int:idCar>/', Home.detailCar),
+    path('sell/', Home.sellCar),
     path('predict/', Predict.index),
     path('booking/', BookDriveTest.handleBooking),
+
+    # rule handle AJAX
+    path('get_listCar/',Home.getListCarByBrand,name='getListCarByBrand'),
+    path('booking/get_listCar/',Home.getListCarByBrand,name='getListCarByBrand')
 ]
