@@ -17,8 +17,8 @@ class Predict:
         if request.method == 'POST':
             form = PredictForm(request.POST)
             if form.is_valid():
-                inputModel['name'] = form.cleaned_data['Name']
                 inputModel['company'] = form.cleaned_data['Company']
+                inputModel['name'] = form.cleaned_data['Name']
                 inputModel['year'] = form.cleaned_data['Year']
                 inputModel['price'] = form.cleaned_data['Price']
                 inputModel['kms_driven'] = form.cleaned_data['kmsDriven']
