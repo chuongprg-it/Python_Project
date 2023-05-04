@@ -91,6 +91,7 @@ DATABASES = {
         'PORT': '3306',
         'OPTIONS': {
             'charset': 'utf8mb4',
+            "read_default_file": "/path/to/my.cnf",
         },
     }
 }

@@ -35,12 +35,14 @@ class DetailCar(models.Model):
 
 class RegisterSell(models.Model):
     ID = models.AutoField(primary_key=True)
-    Brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    Brand = models.CharField(max_length=50)
     nameCar = models.CharField(max_length=50)
-    Year = models.DateField()
+    Year = models.CharField(max_length=10)
     kmsDriven = models.CharField(max_length=10)
     Phone = models.CharField(max_length=12)
     OwnerName = models.CharField(max_length=50)
     Accept = models.BooleanField(default=False)
     def __str__(self) -> str:
         return f'Mã đăng ký bán xe : {self.ID}'
+    class Meta:
+        db_table = 'home_registersell'

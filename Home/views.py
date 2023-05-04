@@ -21,10 +21,17 @@ class Home:
     @csrf_exempt
     def sellCar(request):
         if request.method == 'POST':
-            brand = request.POST.get('select-brand')
-            form = SellForm(initial={'Brand': brand})
+            selectBrand = request.POST.get('select-brand')
+            form = SellForm(initial={'Brand': selectBrand})
             if form.is_valid():
-                form.cleaned_data['Brand'] = brand
+                brand = form.cleaned_data['Brand'] 
+                nameCar = form.cleaned_data['nameCar'] 
+                Year = form.cleaned_data['Year'] 
+                kmsDriven = form.cleaned_data['kmsDriven'] 
+                Phone = form.cleaned_data['Phone'] 
+                OwnerName = form.cleaned_data['OwnerName'] 
+                sell = RegisterSell(1, brand, nameCar, Year, kmsDriven, Phone, OwnerName,  0)
+                sell.save()
         else :
             form = SellForm()
         data = {'title' :'Đăng ký bán xe','form':form}

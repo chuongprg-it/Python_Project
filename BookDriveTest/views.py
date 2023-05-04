@@ -1,6 +1,5 @@
 from django.shortcuts import render,redirect
 from django.core.mail import send_mail
-import random
 from .BookingForm import BookingForm
 from .models import Booking
 from Home.models import Brand
@@ -19,7 +18,7 @@ class BookDriveTest:
                 DateDrive = form.cleaned_data['DateDrive']
                 brandCar = request.POST.get('select-brand')
                 nameCar = request.POST.get('select-car')
-                book = Booking(random.randint(1,100),FullName, Age, Email, Address, Phone, DateDrive, brandCar,nameCar)
+                book = Booking(FullName = FullName,Age = Age,Email = Email,Address = Address,Phone = Phone,DateDrive = DateDrive,Brand = brandCar,nameCar = nameCar)
                 book.save()
                 BookDriveTest.sendMail(FullName, Phone, [Email])
                 redirect('Home.index')
