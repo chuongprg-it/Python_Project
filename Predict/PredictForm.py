@@ -9,7 +9,7 @@ class PredictForm(forms.Form):
     Year = forms.ChoiceField(choices=ListYear,widget=forms.Select(),label='Năm sản xuất')
     Price = forms.CharField(max_length=30, label='Giá tại thời điểm mua')
     kmsDriven = forms.CharField(max_length=10, label='Số Kms đã đi được')
-    fuelType = forms.ChoiceField(choices=(('Diesel','Diesel'),('Petrol','Petrol')),widget=forms.Select(),label='Loaij nhiên liệu sử dụng')
+    fuelType = forms.ChoiceField(choices=(('Diesel','Diesel'),('Petrol','Petrol')),widget=forms.Select(),label='Loại nhiên liệu sử dụng')
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
