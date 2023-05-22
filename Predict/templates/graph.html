@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+    <div>
+        <img id="heatmap-image" src="data:image/png;base64,{{ heatmap }}" alt="Heatmap">
+    </div>
+{% endblock %}

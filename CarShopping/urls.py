@@ -24,8 +24,9 @@ urlpatterns = [
     path('', Home.index),
     path('detailCar/<int:idCar>/', Home.detailCar),
     path('sell/', Home.sellCar),
-    path('predict/', Predict.index),
     path('booking/', BookDriveTest.handleBooking),
+    path('predict/', Predict.index),
+    path('graph',Predict.graph),
 
     # rule handle AJAX
     path('get_listCar/',Home.getListCarByBrand,name='getListCarByBrand'),
