@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Home.views import Home
-from Predict.views import Predict
+from Predict.views import Predict,Graph
 from BookDriveTest.views import BookDriveTest
 
 urlpatterns = [
@@ -26,8 +26,7 @@ urlpatterns = [
     path('sell/', Home.sellCar),
     path('booking/', BookDriveTest.handleBooking),
     path('predict/', Predict.index),
-    path('graph/',Predict.graph),
-    path('heatmap/', Predict.heatmap_view),
+    path('graph/',Graph.graph),
 
     # rule handle AJAX
     path('get_listCar/',Home.getListCarByBrand,name='getListCarByBrand'),
