@@ -8,7 +8,6 @@ import base64
 import io
 from .PredictForm import PredictForm
 
-
 # Create your views here.
 class Predict:
     def index(request):
@@ -44,58 +43,204 @@ class Predict:
     def predictModel(input_data):
         # use Model ML
         # load models from .pkl
-        with open('Predict/DecisionTreeModel.pkl','rb') as f:
+        with open('Predict/LinearRegressionModel.pkl','rb') as f:
             model = pickle.load(f)
             data = model.predict(pd.DataFrame(input_data, columns = ['name','company','year','price','kms_driven','fuel_type']))
             return data[0]
         
+# data visualization
+class Graph:
     def graph(request):
         dataset = pd.read_csv('Predict/datasets/CleanedCar.csv')
-
+        
         # Tạo DataFrame từ dữ liệu
         df = pd.DataFrame(dataset)
 
+        corr_matrix = Graph.corr_matrix(df)
+        #Bar Chart
+        total_car_each_year = Graph.total_car_each_year(dataset)
+        count_car_each_brand = Graph.count_car_each_brand(dataset)
+        count_car_by_fuel = Graph.count_car_by_fuel(dataset)
+        barChart = {
+            'total_car_each_year': total_car_each_year,
+            'count_car_each_brand': count_car_each_brand,
+            'count_car_by_fuel': count_car_by_fuel
+        }
+        # Line Chart
+        price_each_year = Graph.price_each_year(dataset)
+        # Histogram
+        car_price_distribution = Graph.car_price_distribution(dataset)
+        kms_distribution = Graph.kms_distribution(dataset)
+        kms_distribution_by_boxplot = Graph.kms_distribution_by_boxplot(dataset)
+        scatter_plot = Graph.scatter_plot(dataset)
+        data_render = {
+            'title':'Trực quan hóa dữ liệu', 
+            'corr_matrix': corr_matrix,
+            'barChart': barChart,
+            'price_each_year':price_each_year,
+            'car_price_distribution':car_price_distribution,
+            'kms_distribution':kms_distribution,
+            'kms_distribution_by_boxplot':kms_distribution_by_boxplot,
+            'scatter_plot':scatter_plot
+        }
+        return render(request,'graph.html',data_render)
+    
+    @staticmethod
+    def convert_to_base64(fig):
+        buffer = io.BytesIO()
+        fig.savefig(buffer, format='png')
+        plt.close(fig)
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        return image_base64
+
+    @staticmethod
+    def corr_matrix(dataframe):
         # Tính toán ma trận tương quan
-        corr_matrix = np.corrcoef([df['Price'], pd.Categorical(df['fuel_type']).codes, pd.Categorical(df['name']).codes, pd.Categorical(df['kms_driven']).codes, pd.Categorical(df['company']).codes,pd.Categorical(df['year']).codes])
+        corr_matrix = np.corrcoef([
+            dataframe['Price'],
+            pd.Categorical(dataframe['fuel_type']).codes,
+            pd.Categorical(dataframe['name']).codes,
+            pd.Categorical(dataframe['kms_driven']).codes,
+            pd.Categorical(dataframe['company']).codes,
+            pd.Categorical(dataframe['year']).codes
+        ])
 
         # Chuyển sang DataFrame để trực quan hóa
-        corr_df = pd.DataFrame(corr_matrix, columns=df.columns[[0,1,2,3,4,5]], index=df.columns[[0,1,2,3,4,5]])
+        corr_df = pd.DataFrame(
+            corr_matrix,
+            columns=dataframe.columns[[0, 1, 2, 3, 4, 5]],
+            index=dataframe.columns[[0, 1, 2, 3, 4, 5]]
+        )
 
         # Hiển thị heatmap
         fig, ax = plt.subplots()
         sns.heatmap(corr_df, annot=True, cmap='coolwarm', ax=ax)
         plt.tight_layout()
 
-        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        buffer.seek(0)
-        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        image_base64_matrix = Graph.convert_to_base64(fig)
+        return image_base64_matrix
+    @staticmethod
+    def total_car_each_year(dataset):
+        # Tạo một DataFrame mới với số lượng xe theo từng năm
+        car_counts = dataset['year'].value_counts().sort_index()
 
-        # Truyền biểu đồ dưới dạng base64 vào template HTML
-        context = {'heatmap': image_base64}
-        data = {'title':'Đồ thị dữ liệu','heatmap': image_base64}
-        return render(request,'graph.html',data)
+        # Vẽ biểu đồ
+        plt.bar(car_counts.index, car_counts.values)
+
+        # Đặt tiêu đề và các nhãn cho trục x và y
+        plt.title('Tổng số xe của từng năm')
+        plt.xlabel('Năm')
+        plt.ylabel('Số lượng xe')
     
-    def heatmap_view(request):
-        dataset = pd.read_csv('Predict/datasets/CleanedCar.csv')
-        # Tạo DataFrame từ dữ liệu
-        df = pd.DataFrame(dataset)
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    @staticmethod
+    def count_car_each_brand(dataset):
+        # Tạo một DataFrame mới với số lượng xe theo từng hãng
+        car_counts_by_company = dataset['company'].value_counts()
 
-        # Tính toán ma trận tương quan
-        corr_matrix = np.corrcoef([df['Price'], pd.Categorical(df['fuel_type']).codes, pd.Categorical(df['name']).codes, pd.Categorical(df['kms_driven']).codes, pd.Categorical(df['company']).codes,pd.Categorical(df['year']).codes])
+        # Vẽ biểu đồ cột
+        plt.figure(figsize=(25, 6)) 
+        plt.bar(car_counts_by_company.index, car_counts_by_company.values)
 
-        # Chuyển sang DataFrame để trực quan hóa
-        corr_df = pd.DataFrame(corr_matrix, columns=df.columns[[0,1,2,3,4,5]], index=df.columns[[0,1,2,3,4,5]])
+        # Đặt tiêu đề và các nhãn cho trục x và y
+        plt.title('Số lượng xe của từng hãng')
+        plt.xlabel('Hãng xe')
+        plt.ylabel('Số lượng xe')
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    @staticmethod
+    def count_car_by_fuel(dataset):
+        car_counts_by_fuel_type = dataset['fuel_type'].value_counts()
 
-        # Tạo heatmap figure
-        fig, ax = plt.subplots(figsize=(8, 6))
-        sns.heatmap(corr_df, annot=True, cmap='coolwarm', ax=ax)
-        
-        # Lưu biểu đồ vào một file tạm thời
-        temp_file_path = 'path/to/temp/heatmap.png'
-        plt.savefig(temp_file_path)
-        plt.close()
+        # Tạo một danh sách màu sắc cho các cột
+        colors = ['green', 'orange', 'purple'] 
 
-        # Trả về template và truyền đường dẫn tới file biểu đồ tạm thời
-        return render(request, 'heatmap.html', {'heatmap_path': temp_file_path})
+        # Vẽ biểu đồ cột
+        plt.bar(car_counts_by_fuel_type.index, car_counts_by_fuel_type.values, color=colors)
+
+        # Đặt tiêu đề và các nhãn cho trục x và y
+        plt.title('Số lượng xe theo loại nhiên liệu')
+        plt.xlabel('Loại nhiên liệu')
+        plt.ylabel('Số lượng xe')
+
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    
+    @staticmethod
+    def price_each_year(dataset):
+        df_price_year = dataset[['Price', 'year']]
+
+        # Tính giá trung bình của các xe theo từng năm
+        average_price_by_year = df_price_year.groupby('year').mean()
+
+        # Vẽ biểu đồ đường
+        plt.plot(average_price_by_year.index, average_price_by_year['Price'])
+
+        # Đặt tiêu đề và các nhãn cho trục x và y
+        plt.title('Xu hướng thay đổi giá xe theo từng năm')
+        plt.xlabel('Năm')
+        plt.ylabel('Giá xe (USD)')
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    @staticmethod
+    def car_price_distribution(dataset):
+        plt.hist(dataset['Price'], bins=20, edgecolor='black')
+
+        # Đặt tiêu đề và các nhãn cho trục x và y
+        plt.title('Phân phối giá xe')
+        plt.xlabel('Giá xe')
+        plt.ylabel('Số lượng xe')
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    @staticmethod 
+    def kms_distribution(dataset):
+        plt.hist(dataset['kms_driven'], bins=20, edgecolor='black')
+
+        # Đặt tiêu đề và các nhãn cho trục x và y
+        plt.title('Phân phối số km đã đi')
+        plt.xlabel('Số km đã đi')
+        plt.ylabel('Số lượng xe')
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    @staticmethod
+    def kms_distribution_by_boxplot(dataset):
+        sns.boxplot(x=dataset['Price'], color='red')
+
+        # Đặt tiêu đề và nhãn cho trục x
+        plt.title('Phân phối giá xe')
+        plt.xlabel('Giá xe')
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64
+    def scatter_plot(dataset):
+        df_scatter = dataset[['Price', 'kms_driven', 'fuel_type']].copy()
+
+        # Tạo dictionary để ánh xạ các loại nhiên liệu thành màu sắc
+        fuel_colors = {'Petrol': 'red', 'Diesel': 'blue', 'LPG': 'green'}
+
+        # Vẽ biểu đồ scatter với màu sắc và kích thước điểm biểu thị thông tin
+        plt.scatter(df_scatter['kms_driven'], df_scatter['Price'], c=df_scatter['fuel_type'].map(fuel_colors), s=50)
+
+        # Đặt tiêu đề và nhãn cho trục x và y
+        plt.title('Mối quan hệ giữa giá xe và số km đã đi')
+        plt.xlabel('Số km đã đi')
+        plt.ylabel('Giá xe')
+
+        # Tạo legend cho màu sắc
+        for fuel, color in fuel_colors.items():
+            plt.scatter([], [], c=color, label=fuel)
+
+        # Hiển thị legend
+        plt.legend()
+
+        # Chuyển đổi biểu đồ sang dạng base64 để hiển thị trong template HTML
+        image_base64 = Graph.convert_to_base64(plt.gcf())
+        return image_base64

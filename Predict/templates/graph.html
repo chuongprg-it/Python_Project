@@ -3,8 +3,77 @@
 {% block title %}{{title}}{% endblock %}
 
 {% block content %}
-    <div>
-        <img id="heatmap-image" src="data:image/png;base64,{{ heatmap }}" alt="Heatmap">
-        <!-- <img id="heatmap-image" scr="path/to/temp/heatmap.png" alt="Heatmap"> -->
+<div class="container">
+    <div class="row mt-2">
+        <h3>Ma trận tương quan</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#corr_maxtrix">Xem đồ thị</button>
+        <div id="corr_maxtrix" class="collapse">
+            <img id="heatmap-image" src="data:image/png;base64,{{ corr_matrix }}" alt="corr_maxtrix">
+        </div>
     </div>
+    <div class="row mt-2">
+        <h3>Tổng số xe từng năm</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#total_car_each_year">Xem đồ thị</button>
+        <div id="total_car_each_year" class="collapse">
+            <img id="heatmap-image" src="data:image/png;base64,{{ barChart.total_car_each_year }}"
+                alt="total_car_each_year">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Số lượng xe của từng hãng</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#count_car_each_brand">Xem đồ thị</button>
+        <div id="count_car_each_brand" class="collapse">
+            <img width="1300px" id="heatmap-image" src="data:image/png;base64,{{ barChart.count_car_each_brand }}"
+                alt="count_car_each_year">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Số lượng xe theo loại nhiên liệu</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#count_car_by_fuel">Xem đồ thị</button>
+        <div id="count_car_by_fuel" class="collapse">
+            <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ barChart.count_car_by_fuel }}"
+                alt="count_car_by_fuel">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Giá xe theo từng năm</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#price_each_year">Xem đồ thị</button>
+        <div id="price_each_year" class="collapse">
+            <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ price_each_year }}"
+                alt="count_car_by_fuel">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Phân phối giá xe</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#car_price_distribution">Xem đồ thị</button>
+        <div id="car_price_distribution" class="collapse">
+            <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ car_price_distribution }}"
+                alt="count_car_by_fuel">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Phân phối kms đã đi</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#kms_distribution">Xem đồ thị</button>
+        <div id="kms_distribution" class="collapse">
+            <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ kms_distribution }}"
+                alt="count_car_by_fuel">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Phân phối giá xe</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#kms_distribution_by_boxplot">Xem đồ thị</button>
+        <div id="kms_distribution_by_boxplot" class="collapse">
+            <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ kms_distribution_by_boxplot }}"
+                alt="count_car_by_fuel">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Mối quan hệ giữa giá xe và số kms đã đi</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#scatter_plot">Xem đồ thị</button>
+        <div id="scatter_plot" class="collapse">
+            <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ scatter_plot }}"
+                alt="count_car_by_fuel">
+        </div>
+    </div>
+</div>
 {% endblock %}
