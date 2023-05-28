@@ -8,6 +8,7 @@ import base64
 import io
 from .PredictForm import PredictForm
 
+
 # Create your views here.
 class Predict:
     def index(request):
@@ -43,10 +44,11 @@ class Predict:
     def predictModel(input_data):
         # use Model ML
         # load models from .pkl
-        with open('Predict/LinearRegressionModel.pkl','rb') as f:
+        with open('Predict/DecisionTreeModel.pkl','rb') as f:
             model = pickle.load(f)
             data = model.predict(pd.DataFrame(input_data, columns = ['name','company','year','price','kms_driven','fuel_type']))
             return data[0]
+        
     def graph(request):
         dataset = pd.read_csv('Predict/datasets/CleanedCar.csv')
 
@@ -74,3 +76,26 @@ class Predict:
         context = {'heatmap': image_base64}
         data = {'title':'Đồ thị dữ liệu','heatmap': image_base64}
         return render(request,'graph.html',data)
+    
+    def heatmap_view(request):
+        dataset = pd.read_csv('Predict/datasets/CleanedCar.csv')
+        # Tạo DataFrame từ dữ liệu
+        df = pd.DataFrame(dataset)
+
+        # Tính toán ma trận tương quan
+        corr_matrix = np.corrcoef([df['Price'], pd.Categorical(df['fuel_type']).codes, pd.Categorical(df['name']).codes, pd.Categorical(df['kms_driven']).codes, pd.Categorical(df['company']).codes,pd.Categorical(df['year']).codes])
+
+        # Chuyển sang DataFrame để trực quan hóa
+        corr_df = pd.DataFrame(corr_matrix, columns=df.columns[[0,1,2,3,4,5]], index=df.columns[[0,1,2,3,4,5]])
+
+        # Tạo heatmap figure
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.heatmap(corr_df, annot=True, cmap='coolwarm', ax=ax)
+        
+        # Lưu biểu đồ vào một file tạm thời
+        temp_file_path = 'path/to/temp/heatmap.png'
+        plt.savefig(temp_file_path)
+        plt.close()
+
+        # Trả về template và truyền đường dẫn tới file biểu đồ tạm thời
+        return render(request, 'heatmap.html', {'heatmap_path': temp_file_path})
