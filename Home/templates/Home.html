@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block import_file_css_js%}
-    <link rel="stylesheet" href="../static/css/cardShop.css">
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
     <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 {%endblock%}
@@ -15,10 +14,24 @@
                 <h1>Mua ô tô cũ</h1>
                 <div class="input-group">
                     <span class="input-group-addon"><i class="fa-solid fa-magnifying-glass"></i></span>
-                    <input type="text" class="form-control input-lg" placeholder="Tìm theo hãng xe,dòng xe hoặc từ khóa">
+                    <input type="text" class="form-control input-lg search" placeholder="Tìm theo hãng xe,dòng xe hoặc từ khóa (Enter để tìm)" value="">
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Kết quả tìm kiếm</h3>
+                            </div>
+                            <div class="panel-body listCar" id="search-results">
+                                <!-- Kết quả tìm kiếm sẽ được chèn vào đây -->
+                                <div>Không tìm thấy dữ liệu</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-4">
+
                 <h1>Bán ô tô cũ</h1>
                 <form method="POST" action="sell/">
                     <select class="form-control input-lg form-group select-brand" name="select-brand">
@@ -39,18 +52,19 @@
             <ul class="col-lg-8 slick">
                 {% for car in newCarUpload %}
                 <li class="col-lg-2">
-                    <a href="/detailCar/{{car.idCar}}">
-                        <img style="width : 100%" src="{{car.image}}" alt="Chicago">
+                    <a href="/detailCar/{{car.idCar}}" style="text-decoration: none;">
+                        <img style="width:214px;height:200px" src="{{car.image}}" alt="Chicago">
                         <h3 class="nameCar">{{car.nameCar}}</h3>
                         <div class="kms-driven">
                             <span>{{ car.kmsDriven}} km |</span>
                             <span>Tự động</span>
                         </div>
-                        <div class="price">{{ car.price}} triệu</div>
+                        <div class="price" style="color:red">{{ car.price}} triệu</div>
                     </a>
                 </li>
                 {%endfor%}
             </ul>
+            
         </div>
 
     </div>

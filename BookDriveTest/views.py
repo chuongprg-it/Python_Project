@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from .BookingForm import BookingForm
 from .models import Booking
 from Home.models import Brand
 # Create your views here.
 class BookDriveTest:
+    @csrf_exempt
     def handleBooking(request):
         allBrand = Brand.objects.all()
         if request.method == 'POST':
