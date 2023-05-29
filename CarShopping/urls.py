@@ -19,6 +19,7 @@ from django.urls import path
 from Home.views import Home
 from Predict.views import Predict,Graph
 from BookDriveTest.views import BookDriveTest
+from Recognition.views import Recognition
 
 urlpatterns = [
     path('', Home.index),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('booking/', BookDriveTest.handleBooking),
     path('predict/', Predict.index),
     path('graph/',Graph.graph),
+    path('recognition/',Recognition.index),
 
     # rule handle AJAX
     path('get_listCar/',Home.getListCarByBrand,name='getListCarByBrand'),

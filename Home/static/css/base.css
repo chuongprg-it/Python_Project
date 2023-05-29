@@ -1,3 +1,11 @@
 .mt-2 {
-    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.mt-4 {
+    margin-top: 20px;
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

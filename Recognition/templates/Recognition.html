@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Nhận dạng xe ô tô</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <label for="files" class="mt-4">Tải lên hình ảnh xe cần nhận dạng</label>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mt-4">
+                    <input type="file" id="files_image" name="files_image" class="mb-4" />
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-lg btn-primary">Upload file</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+    <div class="row">
+        <div class="center">
+            {% if fileImage %}
+                <table class="table table-striped table-hover mt-4">
+                    <tr>
+                        <th>Tên dòng xe</th>
+                        <th>Công ty sản xuất</th>
+                        <th>Năm sản xuất</th>
+                    </tr>
+                    <tr>
+                        <td>undefine</td>
+                        <td>undefine</td>
+                        <td>undefine</td>
+                    </tr>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

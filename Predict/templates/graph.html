@@ -5,13 +5,6 @@
 {% block content %}
 <div class="container">
     <div class="row mt-2">
-        <h3>Ma trận tương quan</h3>
-        <button class="btn btn-info" data-toggle="collapse" data-target="#corr_maxtrix">Xem đồ thị</button>
-        <div id="corr_maxtrix" class="collapse">
-            <img id="heatmap-image" src="data:image/png;base64,{{ corr_matrix }}" alt="corr_maxtrix">
-        </div>
-    </div>
-    <div class="row mt-2">
         <h3>Tổng số xe từng năm</h3>
         <button class="btn btn-info" data-toggle="collapse" data-target="#total_car_each_year">Xem đồ thị</button>
         <div id="total_car_each_year" class="collapse">
@@ -73,6 +66,13 @@
         <div id="scatter_plot" class="collapse">
             <img width="700px" id="heatmap-image" src="data:image/png;base64,{{ scatter_plot }}"
                 alt="count_car_by_fuel">
+        </div>
+    </div>
+    <div class="row mt-2">
+        <h3>Ma trận tương quan</h3>
+        <button class="btn btn-info" data-toggle="collapse" data-target="#corr_maxtrix">Xem đồ thị</button>
+        <div id="corr_maxtrix" class="collapse">
+            <img id="heatmap-image" src="data:image/png;base64,{{ corr_matrix }}" alt="corr_maxtrix">
         </div>
     </div>
 </div>
