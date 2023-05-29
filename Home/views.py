@@ -43,3 +43,10 @@ class Home:
         datas = Car.objects.filter(idBrand_id=idBrand)
         response = [{'id': data.idCar, 'nameCar': data.nameCar} for data in datas]
         return JsonResponse(response, safe=False)
+    
+    @csrf_exempt
+    def searchCar(request):
+        input_search = request.POST.get('input')
+        listCar = Car.objects.filter(nameCar__icontains=input_search)
+        response = [{'id': data.idCar, 'nameCar': data.nameCar,'image':data.image,'year':data.year} for data in listCar]
+        return JsonResponse(response, safe=False)

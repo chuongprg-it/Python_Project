@@ -1,19 +1,3 @@
-"""
-URL configuration for CarShopping project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
 from Home.views import Home
@@ -25,12 +9,13 @@ urlpatterns = [
     path('', Home.index),
     path('detailCar/<int:idCar>/', Home.detailCar),
     path('sell/', Home.sellCar),
-    path('booking/', BookDriveTest.handleBooking),
+    path('booking/', BookDriveTest.handleBooking,name='booking'),
     path('predict/', Predict.index),
     path('graph/',Graph.graph),
     path('recognition/',Recognition.index),
 
-    # rule handle AJAX
+    # route response JSON
     path('get_listCar/',Home.getListCarByBrand,name='getListCarByBrand'),
-    path('booking/get_listCar/',Home.getListCarByBrand,name='getListCarByBrand')
+    path('booking/get_listCar/',Home.getListCarByBrand,name='getListCarByBrand'),
+    path('search/',Home.searchCar,name='searchCar')
 ]
