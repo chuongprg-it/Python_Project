@@ -149,3 +149,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = '20521745@gm.uit.edu.vn'
 EMAIL_HOST_PASSWORD = 'tczykgjovqmwvses'
+
+STATIC_URL = '/static/'
