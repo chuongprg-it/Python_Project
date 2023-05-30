@@ -43,7 +43,7 @@ class Predict:
     def predictModel(input_data):
         # use Model ML
         # load models from .pkl
-        with open('Predict/LinearRegressionModel.pkl','rb') as f:
+        with open('Predict/DecisionTreeModel.pkl','rb') as f:
             model = pickle.load(f)
             data = model.predict(pd.DataFrame(input_data, columns = ['name','company','year','price','kms_driven','fuel_type']))
             return data[0]
