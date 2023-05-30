@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 import h5py
+import os
 import numpy as np
 from PIL import Image
 
 import cv2
 from keras.models import load_model
-
 
 # Create your views here.
 class Recognition:
@@ -15,32 +15,32 @@ class Recognition:
         if request.method == 'POST':
             fileImage = request.FILES.get('files_image')
             
-            # xử lý nhận dạng tại đây
-            # with h5py.File('C:/Users/Acer/Downloads/Python_Project-main/Python_Project-main/Predict/model.h5', 'r') as model_file:
-            model = load_model('D:\Python\pythonProject\Python_Project\Recognition\model.h5')
-            # Lấy dữ liệu từ file .h5
-            # Ví dụ: weights, labels, ...
-            # image_path = 'D:/Python/pythonProject/Python_Project/Recognition/Stanfordatasets/car_data/car_data/test/Acura Integra Type R 2001/00128.jpg'  # Đường dẫn đến hình ảnh cần nhận dạng
-            image = Image.open(fileImage)
-            image = cv2.imread(fileImage)
-            image = cv2.resize(image, (224, 224))  # Thay đổi kích thước hình ảnh nếu cần thiết
-            image = np.expand_dims(image, axis=0)  # Mở rộng số chiều của hình ảnh
+            project_root = os.path.dirname(os.path.abspath(__file__))
+            temp_dir = os.path.join(project_root, 'temp')
 
-                # Xử lý ảnh
-                # image = Image.open(fileImage)
-                # Tiền xử lý ảnh (resize, chuẩn hóa, ...)
-                # processed_image = preprocess_image(image)
-            
-                # Nhận dạng hình ảnh
-            prediction = model.predict(image, verbose=0)
+            if not os.path.exists(temp_dir):
+                os.mkdir(temp_dir)
+
+            temp_path = os.path.join(temp_dir, fileImage.name)
+            with open(temp_path, 'wb') as f:
+                for chunk in fileImage.chunks():
+                    f.write(chunk)  
+
+            model = load_model('Recognition/model.h5')
+            image = cv2.imread(temp_path) # ảnh được lưu vào trong temp_path và dòng này để lấy ảnh thử temp_path ra
+            # lỗi mảng truyền vào từ dòng này
+            image = cv2.resize(image, (320, 256))  
+            image = np.transpose(image, (0, 1, 2))  
+
+            os.remove(temp_path)
+            print(image) # cái này để log giá trị của biến trên terminal
+            prediction = model.predict(image)
             predicted_label = np.argmax(prediction)
-                # image = '"C:/Users/Acer/Downloads/StanforDataSets/car_data/car_data/train/smart fortwo Convertible 2012/00222.jpg"'
-            context = {
-                'image': image,
-                'prediction': predicted_label
-            }
 
-        else :
+
+        else:
             fileImage = False
-        data = {'title':'Nhận dạng giá xe','fileImage':fileImage}
-        return render(request,'Recognition.html',data)
+            predicted_label = ''
+
+        data = {'title': 'Nhận dạng giá xe', 'fileImage': fileImage, 'prediction': predicted_label}
+        return render(request, 'Recognition.html', data)

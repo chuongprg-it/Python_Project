@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pickle
 import base64
 import io
+import locale
 from .PredictForm import PredictForm
 
 # Create your views here.
@@ -31,7 +32,9 @@ class Predict:
 
                 predictValue = Predict.predictModel([[inputModel['name'],inputModel['company']
                 ,inputModel['year'],inputModel['price'],inputModel['kms_driven'],inputModel['fuel_type']]])
-                
+                predictValue = Predict.convert_inr_to_usd(predictValue,0.012) 
+                locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+                predictValue = locale.currency(predictValue, grouping=True)
         else :
             form = PredictForm()
             predictValue = ''
@@ -47,6 +50,10 @@ class Predict:
             model = pickle.load(f)
             data = model.predict(pd.DataFrame(input_data, columns = ['name','company','year','price','kms_driven','fuel_type']))
             return data[0]
+    @staticmethod
+    def convert_inr_to_usd(amount_inr,exchange_rate):
+        # exchange_rate: Tỷ giá hối đoái từ INR sang USD 
+        return amount_inr * exchange_rate
         
 # data visualization
 class Graph:
