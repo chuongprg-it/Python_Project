@@ -26,7 +26,7 @@ class Recognition:
                 for chunk in fileImage.chunks():
                     f.write(chunk)  
 
-            model = load_model('Recognition/model.h5')
+            model = load_model('Recognition/model_resnet50.h5')
             image = cv2.imread(temp_path) # ảnh được lưu vào trong temp_path và dòng này để lấy ảnh thử temp_path ra
             # lỗi mảng truyền vào từ dòng này
             image = cv2.resize(image, (320, 256))  
