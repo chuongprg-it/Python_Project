@@ -27,14 +27,25 @@
             {% if fileImage %}
                 <table class="table table-striped table-hover mt-4">
                     <tr>
-                        <th>Tên dòng xe</th>
-                        <th>Công ty sản xuất</th>
-                        <th>Năm sản xuất</th>
+                        <th>Hình của xe</th>
+                        <th>Tên xe</th>
+                        <!-- <th>Năm sản xuất</th> -->
                     </tr>
                     <tr>
-                        <td>{{ fileImage.name }}</td>
-                        <td>{{ prediction }}</td>
-                        <td>undefine</td>
+                        <td><img src="{{ fileImage }}" alt="Dự đoán" class="mt-4" /></td>
+                        <td>
+                            <!-- {{ prediction }} -->
+                            {% if prediction == 0 %}
+                                Audi
+                            {% elif prediction == 1 %}
+                                Lamborghini
+                            {% elif prediction == 2 %}
+                                Mercedes
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </td>
+                        <!-- <td>undefine</td> -->
                     </tr>
                 </table>
             {% endif %}

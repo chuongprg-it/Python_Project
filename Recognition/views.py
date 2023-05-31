@@ -26,17 +26,32 @@ class Recognition:
                 for chunk in fileImage.chunks():
                     f.write(chunk)  
 
-            model = load_model('Recognition/model.h5')
-            image = cv2.imread(temp_path) # ảnh được lưu vào trong temp_path và dòng này để lấy ảnh thử temp_path ra
-            # lỗi mảng truyền vào từ dòng này
-            image = cv2.resize(image, (320, 256))  
-            image = np.transpose(image, (0, 1, 2))  
+            model = load_model('Recognition/model_resnet50.h5')
+            img = Image.open(temp_path).resize((224, 224))
+            # Preprocessing the image
+            x = np.array(img)
+
+            # x = np.true_divide(x, 255)
+            ## Scaling
+            x=x/255
+            x = np.expand_dims(x, axis=0)
+
+            preds = model.predict(x)
+            preds=np.argmax(preds, axis=1)
+            # if preds==0:
+            #     preds="The Car IS Audi"
+            # elif preds==1:
+            #     preds="The Car is Lamborghini"
+            # else:
+            #     preds="The Car Is Mercedes"
+            
 
             os.remove(temp_path)
-            print(image) # cái này để log giá trị của biến trên terminal
-            prediction = model.predict(image)
-            predicted_label = np.argmax(prediction)
+            # print(x) # cái này để log giá trị của biến trên terminal
+            # prediction = preds
+            predicted_label = preds[0]
 
+            
 
         else:
             fileImage = False
