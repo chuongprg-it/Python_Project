@@ -1,20 +1,20 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-import h5py
 import os
-import numpy as np
 from PIL import Image
+import numpy as np
+import base64
+from Predict.views import Graph
 
-import cv2
 from keras.models import load_model
 
-# Create your views here.
 class Recognition:
     @csrf_exempt
     def index(request):
         if request.method == 'POST':
             fileImage = request.FILES.get('files_image')
-            
+            image_data = base64.b64encode(fileImage.read()).decode('utf-8')
+
             project_root = os.path.dirname(os.path.abspath(__file__))
             temp_dir = os.path.join(project_root, 'temp')
 
@@ -28,34 +28,24 @@ class Recognition:
 
             model = load_model('Recognition/model_resnet50.h5')
             img = Image.open(temp_path).resize((224, 224))
-            # Preprocessing the image
             x = np.array(img)
 
-            # x = np.true_divide(x, 255)
-            ## Scaling
             x=x/255
             x = np.expand_dims(x, axis=0)
 
             preds = model.predict(x)
             preds=np.argmax(preds, axis=1)
-            # if preds==0:
-            #     preds="The Car IS Audi"
-            # elif preds==1:
-            #     preds="The Car is Lamborghini"
-            # else:
-            #     preds="The Car Is Mercedes"
-            
 
-            os.remove(temp_path)
-            # print(x) # cái này để log giá trị của biến trên terminal
-            # prediction = preds
             predicted_label = preds[0]
-
-            
-
         else:
             fileImage = False
             predicted_label = ''
+            temp_path = ''
+            image_data = ''
 
-        data = {'title': 'Nhận dạng giá xe', 'fileImage': fileImage, 'prediction': predicted_label}
-        return render(request, 'Recognition.html', data)
+        data = {'title': 'Nhận dạng giá xe', 'fileImage': image_data, 'prediction': predicted_label}
+        response = render(request, 'Recognition.html', data)
+
+        if temp_path:
+            os.remove(temp_path)
+        return response

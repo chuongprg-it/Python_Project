@@ -7,6 +7,7 @@ import pickle
 import base64
 import io
 import locale
+import requests
 from .PredictForm import PredictForm
 
 # Create your views here.
@@ -31,8 +32,9 @@ class Predict:
                 inputModel['fuel_type'] = form.cleaned_data['fuelType']
 
                 predictValue = Predict.predictModel([[inputModel['name'],inputModel['company']
-                ,inputModel['year'],inputModel['price'],inputModel['kms_driven'],inputModel['fuel_type']]])
-                predictValue = Predict.convert_inr_to_usd(predictValue,0.012) 
+                ,inputModel['year'],Predict.convert_money(inputModel['price'],'USD','INR'),inputModel['kms_driven'],inputModel['fuel_type']]])
+
+                predictValue = Predict.convert_money(predictValue,'INR','USD') 
                 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
                 predictValue = locale.currency(predictValue, grouping=True)
         else :
@@ -51,9 +53,16 @@ class Predict:
             data = model.predict(pd.DataFrame(input_data, columns = ['name','company','year','price','kms_driven','fuel_type']))
             return data[0]
     @staticmethod
-    def convert_inr_to_usd(amount_inr,exchange_rate):
-        # exchange_rate: Tỷ giá hối đoái từ INR sang USD 
-        return amount_inr * exchange_rate
+    def convert_money(amount, base_currency, target_currency):
+        response = requests.get(f"https://api.exchangerate-api.com/v4/latest/{base_currency.lower()}")
+        data = response.json()
+
+        if response.status_code == 200:
+            exchange_rate = data['rates'][target_currency.upper()]  
+            if base_currency.upper() == 'USD':
+                return float(amount) / exchange_rate 
+            elif target_currency.upper() == 'USD':
+                return float(amount) * exchange_rate
         
 # data visualization
 class Graph:
